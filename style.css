@@ -208,6 +208,75 @@ body {
   line-height: 1.8;
 }
 
+.about-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 4rem;
+  justify-content: center;
+}
+
+.about-img img {
+  width: 100%;
+  max-width: 250px;
+  border-radius: 50%;
+  border: 5px solid var(--primary);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.about-img img:hover {
+  transform: scale(1.05) rotate(2deg);
+}
+
+/* Timeline */
+.timeline {
+  margin-top: 2rem;
+  position: relative;
+  padding-left: 2rem;
+  border-left: 3px solid var(--primary);
+}
+
+.timeline-item {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -18px;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  background-color: var(--gold);
+  border-radius: 50%;
+  border: 3px solid var(--primary);
+}
+
+.timeline-year {
+  font-weight: 700;
+  color: var(--primary);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+/* Button */
+.about-text .btn {
+  margin-top: 2rem;
+  display: inline-block;
+  background-color: var(--gold);
+  color: rgb(12, 12, 12);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.about-text .btn:hover {
+  background-color: var(--bg-light);
+  transform: scale(1.05);
+}
+
 /* PROJECTS SECTION */
 .projects {
   padding: 8rem 0;
