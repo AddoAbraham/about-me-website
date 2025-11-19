@@ -155,3 +155,34 @@ const skillObserver = new IntersectionObserver(
 );
 
 skillCards.forEach((card) => skillObserver.observe(card));
+
+// Typed text for Hero Subtitle
+const roles = ["Web Developer", "UI/UX Designer", "React Enthusiast"];
+let i = 0;
+let j = 0;
+let currentRole = "";
+let isDeleting = false;
+const typedText = document.getElementById("typed-text");
+
+function type() {
+  if (i >= roles.length) i = 0;
+  currentRole = roles[i];
+
+  if (isDeleting) {
+    typedText.textContent = currentRole.substring(0, j--);
+    if (j < 0) {
+      isDeleting = false;
+      i++;
+    }
+  } else {
+    typedText.textContent = currentRole.substring(0, j++);
+    if (j > currentRole.length) {
+      isDeleting = true;
+      setTimeout(type, 1500); // wait before deleting
+      return;
+    }
+  }
+  setTimeout(type, isDeleting ? 50 : 150);
+}
+
+document.addEventListener("DOMContentLoaded", type);
