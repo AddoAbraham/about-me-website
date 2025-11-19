@@ -137,3 +137,21 @@ contactForm.addEventListener("submit", (e) => {
     successMsg.remove();
   }, 4000);
 });
+
+// Animate skill bars when section is in view
+const skillCards = document.querySelectorAll(".skill-card");
+
+const skillObserver = new IntersectionObserver(
+  (entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const fill = entry.target.querySelector(".skill-fill");
+        fill.style.width = fill.getAttribute("data-skill");
+        observer.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.5 }
+);
+
+skillCards.forEach((card) => skillObserver.observe(card));
