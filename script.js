@@ -1,4 +1,4 @@
-// ====== MOBILE NAV TOGGLE ======
+// ================= MOBILE NAV TOGGLE =================
 const nav = document.querySelector(".nav");
 const navLinksContainer = document.querySelector(".nav-links");
 
@@ -13,14 +13,11 @@ hamburger.addEventListener("click", () => {
   hamburger.classList.toggle("toggle");
 });
 
-// ====== SMOOTH SCROLL FOR NAVIGATION ======
-const navLinks = document.querySelectorAll(".nav-links a");
-
-navLinks.forEach((link) => {
+// ================= SMOOTH SCROLL NAV LINKS =================
+document.querySelectorAll(".nav-links a").forEach((link) => {
   link.addEventListener("click", (e) => {
     e.preventDefault();
-    const targetId = link.getAttribute("href").slice(1);
-    const target = document.getElementById(targetId);
+    const target = document.querySelector(link.getAttribute("href"));
 
     if (target) {
       window.scrollTo({
@@ -29,89 +26,47 @@ navLinks.forEach((link) => {
       });
     }
 
-    // Close mobile nav after clicking
-    if (navLinksContainer.classList.contains("nav-active")) {
-      navLinksContainer.classList.remove("nav-active");
-      hamburger.classList.remove("toggle");
-    }
+    // Close mobile menu
+    navLinksContainer.classList.remove("nav-active");
+    hamburger.classList.remove("toggle");
   });
 });
 
-// ====== HERO IMAGE ANIMATION ON LOAD ======
+// ================= HERO IMAGE ON LOAD =================
 const heroImage = document.querySelector(".hero-img img");
+
 window.addEventListener("load", () => {
-  heroImage.style.transform = "scale(1)";
   heroImage.style.opacity = "1";
+  heroImage.style.transform = "scale(1)";
 });
 
-// ====== FADE-IN SECTIONS ON SCROLL ======
+heroImage.style.transition = "1s ease";
+heroImage.style.opacity = "0";
+heroImage.style.transform = "scale(0.8)";
+
+// ================= FADE-IN SECTIONS =================
 const faders = document.querySelectorAll(
   ".about, .projects, .skills, .contact"
 );
 
-const appearOptions = {
-  threshold: 0.2,
-  rootMargin: "0px 0px -50px 0px",
-};
-
-const appearOnScroll = new IntersectionObserver((entries, observer) => {
-  entries.forEach((entry) => {
-    if (!entry.isIntersecting) return;
-    entry.target.classList.add("appear");
-    observer.unobserve(entry.target);
-  });
-}, appearOptions);
+const appearOnScroll = new IntersectionObserver(
+  (entries, observer) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("appear");
+      observer.unobserve(entry.target);
+    });
+  },
+  { threshold: 0.2 }
+);
 
 faders.forEach((fader) => {
   fader.classList.add("fade-section");
   appearOnScroll.observe(fader);
 });
 
-// ====== CONTACT FORM HANDLING ======
+// ================= CONTACT FORM =================
 const contactForm = document.querySelector(".contact-form");
-
-contactForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const name = contactForm.name.value.trim();
-  const email = contactForm.email.value.trim();
-  const message = contactForm.message.value.trim();
-
-  if (!name || !email || !message) {
-    alert("Please fill in all fields!");
-    return;
-  }
-
-  alert(`Thanks ${name}! Your message has been sent.`);
-  contactForm.reset();
-});
-
-// ====== HERO IMAGE INITIAL STYLING ======
-heroImage.style.transition = "all 1s ease";
-heroImage.style.transform = "scale(0.8)";
-heroImage.style.opacity = "0";
-
-// ====== SCROLL-ACTIVE NAV HIGHLIGHT ======
-const sections = document.querySelectorAll("section");
-const navItems = document.querySelectorAll(".nav-links a");
-
-window.addEventListener("scroll", () => {
-  let current = "";
-  sections.forEach((section) => {
-    const sectionTop = section.offsetTop - 70;
-    const sectionHeight = section.clientHeight;
-    if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
-      current = section.getAttribute("id");
-    }
-  });
-
-  navItems.forEach((link) => {
-    link.classList.remove("active");
-    if (link.getAttribute("href").includes(current)) {
-      link.classList.add("active");
-    }
-  });
-});
 
 contactForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -129,26 +84,45 @@ contactForm.addEventListener("submit", (e) => {
   successMsg.textContent = `Thanks ${name}! Your message has been sent.`;
   successMsg.style.color = "var(--primary)";
   successMsg.style.fontWeight = "600";
-  contactForm.appendChild(successMsg);
+  successMsg.style.marginTop = "10px";
 
+  contactForm.appendChild(successMsg);
   contactForm.reset();
 
-  setTimeout(() => {
-    successMsg.remove();
-  }, 4000);
+  setTimeout(() => successMsg.remove(), 4000);
 });
 
-// Animate skill bars when section is in view
-const skillCards = document.querySelectorAll(".skill-card");
+// ================= SCROLL-ACTIVE NAV HIGHLIGHT =================
+const sections = document.querySelectorAll("section");
+const navItems = document.querySelectorAll(".nav-links a");
 
+window.addEventListener("scroll", () => {
+  let currentSection = "";
+
+  sections.forEach((section) => {
+    const offset = section.offsetTop - 100;
+    if (scrollY >= offset && scrollY < offset + section.offsetHeight) {
+      currentSection = section.id;
+    }
+  });
+
+  navItems.forEach((link) => {
+    link.classList.toggle(
+      "active",
+      link.getAttribute("href").includes(currentSection)
+    );
+  });
+});
+
+// ================= SKILL BARS ANIMATION =================
+const skillCards = document.querySelectorAll(".skill-card");
 const skillObserver = new IntersectionObserver(
   (entries, observer) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const fill = entry.target.querySelector(".skill-fill");
-        fill.style.width = fill.getAttribute("data-skill");
-        observer.unobserve(entry.target);
-      }
+      if (!entry.isIntersecting) return;
+      const fill = entry.target.querySelector(".skill-fill");
+      fill.style.width = fill.dataset.skill;
+      observer.unobserve(entry.target);
     });
   },
   { threshold: 0.5 }
@@ -156,37 +130,35 @@ const skillObserver = new IntersectionObserver(
 
 skillCards.forEach((card) => skillObserver.observe(card));
 
-// Typed text for Hero Subtitle
+// ================= TYPED TEXT ANIMATION =================
 const roles = ["Web Developer", "UI/UX Designer", "React Enthusiast"];
 let i = 0;
 let j = 0;
-let currentRole = "";
 let isDeleting = false;
 const typedText = document.getElementById("typed-text");
 
 function type() {
-  if (i >= roles.length) i = 0;
-  currentRole = roles[i];
+  const current = roles[i];
 
-  if (isDeleting) {
-    typedText.textContent = currentRole.substring(0, j--);
-    if (j < 0) {
-      isDeleting = false;
-      i++;
-    }
+  typedText.textContent = current.substring(0, j);
+
+  if (!isDeleting && j < current.length) {
+    j++;
+  } else if (isDeleting && j > 0) {
+    j--;
   } else {
-    typedText.textContent = currentRole.substring(0, j++);
-    if (j > currentRole.length) {
-      isDeleting = true;
-      setTimeout(type, 1500); // wait before deleting
-      return;
-    }
+    isDeleting = !isDeleting;
+    if (!isDeleting) i = (i + 1) % roles.length;
+    setTimeout(type, 800);
+    return;
   }
-  setTimeout(type, isDeleting ? 50 : 150);
+
+  setTimeout(type, isDeleting ? 50 : 120);
 }
 
 document.addEventListener("DOMContentLoaded", type);
 
+// ================= PROJECT FILTER =================
 const filterBtns = document.querySelectorAll(".filter-btn");
 const projectCards = document.querySelectorAll(".project-card");
 
@@ -196,12 +168,18 @@ filterBtns.forEach((btn) => {
     btn.classList.add("active");
 
     const filter = btn.dataset.filter;
+
     projectCards.forEach((card) => {
-      if (filter === "all" || card.classList.contains(filter)) {
-        card.style.display = "block";
-      } else {
-        card.style.display = "none";
-      }
+      card.style.opacity = "0";
+
+      setTimeout(() => {
+        if (filter === "all" || card.classList.contains(filter)) {
+          card.style.display = "block";
+          card.style.opacity = "1";
+        } else {
+          card.style.display = "none";
+        }
+      }, 200);
     });
   });
 });
